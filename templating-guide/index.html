@@ -1,0 +1,2762 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Learn how to use Nuclei engine to write your own custom security checks with very simple and easy to use templating syntax.">
+      
+      
+      
+      <link rel="shortcut icon" href="../static/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.5.0">
+    
+    
+      
+        <title>Templating Guide - Nuclei - Community Powered Vulnerability Scanner</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.18dbb20c.min.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/palette.0ec9b792.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#3f51b5">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Nunito Sans",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-165996103-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}),document.addEventListener("DOMContentSwitch",function(){ga("send","pageview",document.location.pathname)})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#templating-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="Nuclei - Community Powered Vulnerability Scanner" class="md-header-nav__button md-logo" aria-label="Nuclei - Community Powered Vulnerability Scanner">
+      
+  <img src="../static/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Nuclei - Community Powered Vulnerability Scanner
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Templating Guide
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/projectdiscovery/nuclei/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+          
+
+  
+
+<nav class="md-tabs md-tabs--active" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href=".." class="md-tabs__link">
+          Home
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../nuclei/get-started/#nuclei-features" class="md-tabs__link">
+          Getting Started
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="./" class="md-tabs__link md-tabs__link--active">
+          Templating Guide
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../template-examples/http/" class="md-tabs__link">
+          Template Examples
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../releases/nuclei-changelog/" class="md-tabs__link">
+          Releases
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Nuclei - Community Powered Vulnerability Scanner" class="md-nav__button md-logo" aria-label="Nuclei - Community Powered Vulnerability Scanner">
+      
+  <img src="../static/logo.png" alt="logo">
+
+    </a>
+    Nuclei - Community Powered Vulnerability Scanner
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/projectdiscovery/nuclei/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1">
+    
+    <label class="md-nav__link" for="nav-1">
+      Home
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Home" data-md-level="1">
+      <label class="md-nav__title" for="nav-1">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Home
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Index" class="md-nav__link">
+      Index
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      Getting Started
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Getting Started
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../nuclei/get-started/#nuclei-features" title="Features" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../nuclei/get-started/#using-nuclei" title="Uses" class="md-nav__link">
+      Uses
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../nuclei/get-started/#code-contribution" title="Contribution" class="md-nav__link">
+      Contribution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../nuclei/get-started/#license" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      Templating Guide
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Templating Guide" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Templating Guide
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Templating Guide
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Templating Guide" class="md-nav__link md-nav__link--active">
+      Templating Guide
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#template-details" class="md-nav__link">
+    Template Details
+  </a>
+  
+    <nav class="md-nav" aria-label="Template Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#information" class="md-nav__link">
+    Information
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-requests" class="md-nav__link">
+    HTTP Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method" class="md-nav__link">
+    Method
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redirects" class="md-nav__link">
+    Redirects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path" class="md-nav__link">
+    Path
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#headers" class="md-nav__link">
+    Headers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#body" class="md-nav__link">
+    Body
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session" class="md-nav__link">
+    Session
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchers" class="md-nav__link">
+    Matchers
+  </a>
+  
+    <nav class="md-nav" aria-label="Matchers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditions" class="md-nav__link">
+    Conditions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matched-parts" class="md-nav__link">
+    Matched Parts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative-matchers" class="md-nav__link">
+    Negative Matchers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-matchers" class="md-nav__link">
+    Multiple Matchers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchers-condition" class="md-nav__link">
+    Matchers Condition
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extractors" class="md-nav__link">
+    Extractors
+  </a>
+  
+    <nav class="md-nav" aria-label="Extractors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types_1" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matched-parts_1" class="md-nav__link">
+    Matched Parts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-extractor" class="md-nav__link">
+    Dynamic extractor
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-http-template" class="md-nav__link">
+    Example HTTP Template
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-raw-requests" class="md-nav__link">
+    HTTP Raw requests
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Raw requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intruder-payloads" class="md-nav__link">
+    Intruder payloads
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intruder-attack" class="md-nav__link">
+    Intruder attack
+  </a>
+  
+    <nav class="md-nav" aria-label="Intruder attack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types-of-attack" class="md-nav__link">
+    Types of attack
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raw-http-support" class="md-nav__link">
+    RAW HTTP Support
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helper-functions" class="md-nav__link">
+    Helper functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-raw-template" class="md-nav__link">
+    Example RAW Template
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-requests" class="md-nav__link">
+    DNS Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="DNS Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    Type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    Name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class" class="md-nav__link">
+    Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recursion" class="md-nav__link">
+    Recursion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retries" class="md-nav__link">
+    Retries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchers_1" class="md-nav__link">
+    Matchers
+  </a>
+  
+    <nav class="md-nav" aria-label="Matchers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types_2" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-dns-template" class="md-nav__link">
+    Example DNS Template
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflows" class="md-nav__link">
+    Workflows
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generic-workflows" class="md-nav__link">
+    Generic Workflows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-workflows" class="md-nav__link">
+    Conditional Workflows
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advance-fuzzing" class="md-nav__link">
+    Advance Fuzzing
+  </a>
+  
+    <nav class="md-nav" aria-label="Advance Fuzzing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http-pipelining" class="md-nav__link">
+    HTTP Pipelining
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-connection-pooling" class="md-nav__link">
+    HTTP Connection pooling
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-smuggling" class="md-nav__link">
+    HTTP Smuggling
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#race-conditions" class="md-nav__link">
+    Race conditions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="#template-details" title="Template Details" class="md-nav__link">
+      Template Details
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="#http-requests" title="HTTP Requests" class="md-nav__link">
+      HTTP Requests
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="#dns-requests" title="DNS Requests" class="md-nav__link">
+      DNS Requests
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="#http-raw-requests" title="HTTP Raw requests" class="md-nav__link">
+      HTTP Raw requests
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="#workflows" title="Workflows" class="md-nav__link">
+      Workflows
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="#advance-fuzzing" title="Advance Fuzzing" class="md-nav__link">
+      Advance Fuzzing
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Template Examples
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Template Examples" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Template Examples
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../template-examples/http/" title="HTTP" class="md-nav__link">
+      HTTP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../template-examples/dns/" title="DNS" class="md-nav__link">
+      DNS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../template-examples/raw/" title="RAW HTTP" class="md-nav__link">
+      RAW HTTP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../template-examples/fuzzing/" title="Fuzzing" class="md-nav__link">
+      Fuzzing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../template-examples/workflow/" title="Workflow" class="md-nav__link">
+      Workflow
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../template-examples/smuggling/" title="Smuggling" class="md-nav__link">
+      Smuggling
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Releases
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Releases" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Releases
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../releases/nuclei-changelog/" title="Nuclei" class="md-nav__link">
+      Nuclei
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../releases/templates-changelog/" title="Templates" class="md-nav__link">
+      Templates
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#template-details" class="md-nav__link">
+    Template Details
+  </a>
+  
+    <nav class="md-nav" aria-label="Template Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#information" class="md-nav__link">
+    Information
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-requests" class="md-nav__link">
+    HTTP Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method" class="md-nav__link">
+    Method
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redirects" class="md-nav__link">
+    Redirects
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path" class="md-nav__link">
+    Path
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#headers" class="md-nav__link">
+    Headers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#body" class="md-nav__link">
+    Body
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session" class="md-nav__link">
+    Session
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchers" class="md-nav__link">
+    Matchers
+  </a>
+  
+    <nav class="md-nav" aria-label="Matchers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditions" class="md-nav__link">
+    Conditions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matched-parts" class="md-nav__link">
+    Matched Parts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#negative-matchers" class="md-nav__link">
+    Negative Matchers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-matchers" class="md-nav__link">
+    Multiple Matchers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchers-condition" class="md-nav__link">
+    Matchers Condition
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extractors" class="md-nav__link">
+    Extractors
+  </a>
+  
+    <nav class="md-nav" aria-label="Extractors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types_1" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matched-parts_1" class="md-nav__link">
+    Matched Parts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-extractor" class="md-nav__link">
+    Dynamic extractor
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-http-template" class="md-nav__link">
+    Example HTTP Template
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-raw-requests" class="md-nav__link">
+    HTTP Raw requests
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Raw requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#intruder-payloads" class="md-nav__link">
+    Intruder payloads
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intruder-attack" class="md-nav__link">
+    Intruder attack
+  </a>
+  
+    <nav class="md-nav" aria-label="Intruder attack">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types-of-attack" class="md-nav__link">
+    Types of attack
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raw-http-support" class="md-nav__link">
+    RAW HTTP Support
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helper-functions" class="md-nav__link">
+    Helper functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-raw-template" class="md-nav__link">
+    Example RAW Template
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dns-requests" class="md-nav__link">
+    DNS Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="DNS Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    Type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    Name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#class" class="md-nav__link">
+    Class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recursion" class="md-nav__link">
+    Recursion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retries" class="md-nav__link">
+    Retries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchers_1" class="md-nav__link">
+    Matchers
+  </a>
+  
+    <nav class="md-nav" aria-label="Matchers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#types_2" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-dns-template" class="md-nav__link">
+    Example DNS Template
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflows" class="md-nav__link">
+    Workflows
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generic-workflows" class="md-nav__link">
+    Generic Workflows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-workflows" class="md-nav__link">
+    Conditional Workflows
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advance-fuzzing" class="md-nav__link">
+    Advance Fuzzing
+  </a>
+  
+    <nav class="md-nav" aria-label="Advance Fuzzing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http-pipelining" class="md-nav__link">
+    HTTP Pipelining
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-connection-pooling" class="md-nav__link">
+    HTTP Connection pooling
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-smuggling" class="md-nav__link">
+    HTTP Smuggling
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#race-conditions" class="md-nav__link">
+    Race conditions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/projectdiscovery/nuclei/edit/master/docs/templating-guide/index.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="templating-guide">Templating Guide<a class="headerlink" href="#templating-guide" title="Permanent link">&para;</a></h1>
+<p><strong>Nuclei</strong> is based on the concepts of <code>YAML</code> based template files that define how the requests will be sent and processed. This allows easy extensibility capabilities to nuclei.</p>
+<p>The templates are written in <code>YAML</code> which specifies a simple human readable format to quickly define the execution process.</p>
+<p><strong>Guide to write your own nuclei template -</strong></p>
+<hr />
+<p>Let's start with the basics and define our own workflow file for detecting the presence of a <code>.git/config</code> file on a webserver and take it from there.</p>
+<h2 id="template-details">Template Details<a class="headerlink" href="#template-details" title="Permanent link">&para;</a></h2>
+<p>Each template has a unique ID which is used during output writing to specify the template name for an output line.</p>
+<p>The template file ends with <strong>yaml</strong> extension. The template files can be created any text editor of your choice.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># id contains the unique identifier for the template.</span>
+<span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">git-config</span>
+</code></pre></div>
+<p>ID must not contain spaces. This is done to allow easier output parsing.</p>
+<h3 id="information">Information<a class="headerlink" href="#information" title="Permanent link">&para;</a></h3>
+<p>Next important piece of information about a template is the <strong>info</strong> block. Info block provides more context on the purpose of the template and the <strong>author</strong>. It also contain <strong>severity</strong> field which indicates the severity of the template, <strong>info</strong> block supports dynamic fields, so one can define N number of <code>key: value</code> formatted fields to make template information more relevant for the checks you are writing.</p>
+<p>Let's add an <strong>info</strong> block to our template as well.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">info</span><span class="p">:</span>
+  <span class="c1"># Name is the name of the template</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Git Config File Detection Template</span>
+  <span class="c1"># Author is the name of the author for the template</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Ice3man</span>
+  <span class="c1"># Severity is the severity for the check.</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">medium</span>
+  <span class="c1"># Description optionally describes the template.</span>
+  <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Searches for the pattern /.git/config on passed URLs.</span>
+  <span class="c1"># CVSS is impact score of the check.</span>
+  <span class="nt">cvss</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4.6</span> 
+</code></pre></div>
+<p>Actual requests and corresponding matchers are placed below the info block and they perform the task of making requests to target servers and finding if the template request was successful.</p>
+<p>Each template file can contain multiple requests to be made. The template is iterated and one by one the desired HTTP/DNS requests are made to the target sites.</p>
+<h2 id="http-requests">HTTP Requests<a class="headerlink" href="#http-requests" title="Permanent link">&para;</a></h2>
+<p>Requests start with a request block which specifies the start of the requests for the template.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start the requests for the template right here</span>
+<span class="nt">requests</span><span class="p">:</span>
+</code></pre></div>
+<h4 id="method">Method<a class="headerlink" href="#method" title="Permanent link">&para;</a></h4>
+<p>First thing in the request is <strong>method</strong>. Request method can be <strong>GET</strong>, <strong>POST</strong>, <strong>PUT</strong>, <strong>DELETE</strong>, etc depending on the needs.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Method is the method for the request</span>
+<span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GET</span>
+</code></pre></div>
+<h4 id="redirects">Redirects<a class="headerlink" href="#redirects" title="Permanent link">&para;</a></h4>
+<p>Redirection conditions can be specified per each template. By default, redirects are not followed. However, if desired, they can be enabled with <code>redirects: true</code> in request details. 10 redirects are followed at maximum by default which should be good enough for most use cases. More fine grained control can be exercised over number of redirects followed by using <code>max-redirects</code> field.</p>
+<p>An example of the usage:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GET</span>
+    <span class="nt">path</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;{{BaseURL}}/login.php&quot;</span>
+    <span class="nt">redirects</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">max-redirects</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+</code></pre></div>
+<h4 id="path">Path<a class="headerlink" href="#path" title="Permanent link">&para;</a></h4>
+<p>The next part of the requests is the <strong>path</strong> of the request path. Dynamic variables can be placed in the path to modify its behavior on runtime. Variables start with <code>{{</code> and end with <code>}}</code> and are case-sensitive.</p>
+<ol>
+<li><strong>BaseURL</strong> - Placing BaseURL as a variable in the path will lead to it being replaced on runtime in the request by the original URL as specified in the target file.</li>
+<li><strong>Hostname</strong> - Hostname variable is replaced by the hostname of the target on runtime.</li>
+</ol>
+<p>Some sample dynamic variable replacement examples:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">path</span><span class="p">:</span> <span class="s">&quot;{{BaseURL}}/.git/config&quot;</span>
+<span class="c1"># This path will be replaced on execution with BaseURL</span>
+<span class="c1"># If BaseURL is set to  https://abc.com then the</span>
+<span class="c1"># path will get replaced to the following: https://abc.com/.git/config</span>
+</code></pre></div>
+<p>Multiple paths can also be specified in one request which will be requested for the target.</p>
+<h4 id="headers">Headers<a class="headerlink" href="#headers" title="Permanent link">&para;</a></h4>
+<p>Headers can also be specified to be sent along with the requests. Headers are placed in form of key/value pairs. An example header configuration looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># headers contains the headers for the request</span>
+<span class="nt">headers</span><span class="p">:</span>
+  <span class="c1"># Custom user-agent header</span>
+  <span class="nt">User-Agent</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Some-Random-User-Agent</span>
+  <span class="c1"># Custom request origin</span>
+  <span class="nt">Origin</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://google.com</span>
+</code></pre></div>
+<h4 id="body">Body<a class="headerlink" href="#body" title="Permanent link">&para;</a></h4>
+<p>Body specifies a body to be sent along with the request. For instance:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Body is a string sent along with the request</span>
+<span class="nt">body</span><span class="p">:</span> <span class="s">&quot;{\&quot;some</span><span class="nv"> </span><span class="s">random</span><span class="nv"> </span><span class="s">JSON\&quot;}&quot;</span>
+
+<span class="c1"># Body is a string sent along with the request</span>
+<span class="nt">body</span><span class="p">:</span> <span class="s">&quot;admin=test&quot;</span>
+</code></pre></div>
+<h4 id="session">Session<a class="headerlink" href="#session" title="Permanent link">&para;</a></h4>
+<p>To maintain cookie based browser like session between multiple requests, you can simply use <code>cookie-reuse: true</code> in your template, Useful in cases where you want to maintain session between series of request to complete the exploit chain and to perform authenticated scans. </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># cookie-reuse accepts boolean input and false as default</span>
+<span class="nt">cookie-reuse</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<h4 id="matchers">Matchers<a class="headerlink" href="#matchers" title="Permanent link">&para;</a></h4>
+<p>Matchers are the core of nuclei. They are what make the tool so powerful. Multiple type of combinations and checks can be added to ensure that the results you get are free from false-positives.</p>
+<h5 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h5>
+<p>Multiple matchers can be specified in a request. There are basically 6 types of matchers:</p>
+<table>
+<thead>
+<tr>
+<th>Matcher Type</th>
+<th>Part Matched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>status</td>
+<td>Status Code of Response</td>
+</tr>
+<tr>
+<td>size</td>
+<td>Content Length of Response</td>
+</tr>
+<tr>
+<td>word</td>
+<td>Response body or headers</td>
+</tr>
+<tr>
+<td>regex</td>
+<td>Response body or headers</td>
+</tr>
+<tr>
+<td>binary</td>
+<td>Response body</td>
+</tr>
+<tr>
+<td>dsl</td>
+<td>All Response Parts</td>
+</tr>
+</tbody>
+</table>
+<p>To match status codes for responses, you can use the following syntax.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">matchers</span><span class="p">:</span>
+  <span class="c1"># Match the status codes</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
+    <span class="c1"># Some status codes we want to match</span>
+    <span class="nt">status</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">302</span>
+</code></pre></div>
+<p>To match binary for hexadecimal responses, you can use the following syntax.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">matchers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">binary</span>
+    <span class="nt">binary</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;504B0304&quot;</span> <span class="c1"># zip archive</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;526172211A070100&quot;</span> <span class="c1"># rar RAR archive version 5.0</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;FD377A585A0000&quot;</span> <span class="c1"># xz tar.xz archive</span>
+    <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">or</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+</code></pre></div>
+<p>To match size, similar structure can be followed. If the status code of response from the site matches any single one specified in the matcher, the request is marked as successful.</p>
+<p><strong>Word</strong> and <strong>Regex</strong> matchers can be further configured depending on the needs of the users.</p>
+<p>Complex matchers of type <strong>dsl</strong> allows to build more elaborated expressions with helper functions, this is an example of a complex DSL matcher:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">matchers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dsl</span>
+    <span class="nt">dsl</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;len(body)&lt;1024</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">status_code==200&quot;</span> <span class="c1"># Body length less than 1024 and 200 status code</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;contains(toupper(body),</span><span class="nv"> </span><span class="s">md5(cookie))&quot;</span> <span class="c1"># Check if the MD5 sum of cookies is contained in the uppercase body</span>
+</code></pre></div>
+<p>Every part of a HTTP response can be matched with DSL matcher:</p>
+<table>
+<thead>
+<tr>
+<th>Response Part</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>content_length</td>
+<td>Content-Length Header</td>
+<td>content_length &gt;= 1024</td>
+</tr>
+<tr>
+<td>status_code</td>
+<td>Response Status Code</td>
+<td>status_code==200</td>
+</tr>
+<tr>
+<td>all_headers</td>
+<td>Unique string containing all headers</td>
+<td>len(all_headers)</td>
+</tr>
+<tr>
+<td>body</td>
+<td>Body as string</td>
+<td>len(body)</td>
+</tr>
+<tr>
+<td>header_name</td>
+<td>Lowercase header name with <code>-</code> converted to <code>_</code></td>
+<td>len(user_agent)</td>
+</tr>
+<tr>
+<td>raw</td>
+<td>Headers + Response</td>
+<td>len(raw)</td>
+</tr>
+</tbody>
+</table>
+<p>This is the list for a DNS response supported by DSL matcher:</p>
+<table>
+<thead>
+<tr>
+<th>Response Part</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rcode</td>
+<td>Response status</td>
+<td>rcode == "NXDOMAIN</td>
+</tr>
+<tr>
+<td>question</td>
+<td>Response question section</td>
+<td>len(question)</td>
+</tr>
+<tr>
+<td>extra</td>
+<td>Response extra section</td>
+<td>len(extra)</td>
+</tr>
+<tr>
+<td>answer</td>
+<td>Response answers section</td>
+<td>len(answer)</td>
+</tr>
+<tr>
+<td>ns</td>
+<td>Response authority section</td>
+<td>len(ns)</td>
+</tr>
+<tr>
+<td>raw</td>
+<td>Full response</td>
+<td>len(raw)</td>
+</tr>
+</tbody>
+</table>
+<h5 id="conditions">Conditions<a class="headerlink" href="#conditions" title="Permanent link">&para;</a></h5>
+<p>Multiple words and regexes can be specified in a single matcher and can be configured with different conditions like <strong>AND</strong> and <strong>OR</strong>.</p>
+<ol>
+<li><strong>AND</strong> - Using AND conditions allows matching of all the words from the list of words for the matcher. Only then will the request be marked as successful when all the words have been matched.</li>
+<li><strong>OR</strong> - Using OR conditions allows matching of a single word from the list of matcher. The request will be marked as successful when even one of the word is matched for the matcher.</li>
+</ol>
+<h5 id="matched-parts">Matched Parts<a class="headerlink" href="#matched-parts" title="Permanent link">&para;</a></h5>
+<p>Multiple parts of the response can also be matched for the request, default matched part is <code>body</code> if not defined. </p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Matched Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>body</td>
+<td>Body of the response</td>
+</tr>
+<tr>
+<td>header</td>
+<td>Header of the response</td>
+</tr>
+<tr>
+<td>all</td>
+<td>Both body and header of the response</td>
+</tr>
+</tbody>
+</table>
+<p>Example matchers for response body using the AND condition:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">matchers</span><span class="p">:</span>
+  <span class="c1"># Match the body word</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+   <span class="c1"># Some words we want to match</span>
+  <span class=" -Error"> </span><span class="nt">words</span><span class="p">:</span>
+     <span class="p p-Indicator">-</span> <span class="s">&quot;[core]&quot;</span>
+     <span class="p p-Indicator">-</span> <span class="s">&quot;[config]&quot;</span>
+   <span class="c1"># Both words must be found in the response body</span>
+   <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">and</span>
+   <span class="c1">#  We want to match request body (default)</span>
+   <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+</code></pre></div>
+<p>Similarly, matchers can be written to match anything that you want to find in the response body allowing unlimited creativity and extensibility.</p>
+<h5 id="negative-matchers">Negative Matchers<a class="headerlink" href="#negative-matchers" title="Permanent link">&para;</a></h5>
+<p>All types of matchers also support negative/opposite conditions, mostly useful when you looking to match with exclusions, it can be used by adding <code>negative: true</code> in the <strong>matchers</strong> block.</p>
+<p>Here is an example syntax using <code>negative</code> condition, this will return all the URLs not having <code>PHPSESSID</code> in the response header. </p>
+<div class="highlight"><pre><span></span><code><span class="nt">matchers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+    <span class="nt">words</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;PHPSESSID&quot;</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+    <span class="nt">negative</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>In same manner, <code>negative</code> condition can be used with single or multiple matchers.</p>
+<h5 id="multiple-matchers">Multiple Matchers<a class="headerlink" href="#multiple-matchers" title="Permanent link">&para;</a></h5>
+<p>Multiple matchers can be used in a single template to fingerprint multiple conditions with a single request.</p>
+<p>Here is an example of syntax for multiple matchers.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">matchers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">php</span>
+    <span class="nt">words</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;X-Powered-By:</span><span class="nv"> </span><span class="s">PHP&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;PHPSESSID&quot;</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">node</span>
+    <span class="nt">words</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;Server:</span><span class="nv"> </span><span class="s">NodeJS&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;X-Powered-By:</span><span class="nv"> </span><span class="s">nodejs&quot;</span>
+    <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">or</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">python</span>
+    <span class="nt">words</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;Python/2.&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;Python/3.&quot;</span>
+    <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">or</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+</code></pre></div>
+<h5 id="matchers-condition">Matchers Condition<a class="headerlink" href="#matchers-condition" title="Permanent link">&para;</a></h5>
+<p>While using multiple matchers the default condition is to follow OR operation in between all the matchers, AND operation can be used to make sure return the result if all matchers returns true.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nt">matchers-condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">and</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+        <span class="nt">words</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;X-Powered-By:</span><span class="nv"> </span><span class="s">PHP&quot;</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;PHPSESSID&quot;</span>
+        <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">or</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+        <span class="nt">words</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;PHP&quot;</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+</code></pre></div>
+<h4 id="extractors">Extractors<a class="headerlink" href="#extractors" title="Permanent link">&para;</a></h4>
+<p>Extractors are another important feature of nuclei. Extractors can be used to extract and display in results a match from the response body or headers based on available types.</p>
+<h5 id="types_1">Types<a class="headerlink" href="#types_1" title="Permanent link">&para;</a></h5>
+<p>Multiple extractors can be specified in a request, as of now we support two type of extractors.</p>
+<table>
+<thead>
+<tr>
+<th>Extractor Type</th>
+<th>Part Matched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>Response body or headers</td>
+</tr>
+<tr>
+<td>kval</td>
+<td>Response headers or cookie</td>
+</tr>
+</tbody>
+</table>
+<p>Example extractor for response body using regex, you can use the following syntax.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A list of extractors for text extraction</span>
+<span class="nt">extractors</span><span class="p">:</span>
+  <span class="c1"># type of the extractor.</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regex</span>
+    <span class="c1"># part of the response to extract (can be headers, all too)</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+    <span class="c1"># regex to use for extraction.</span>
+    <span class="nt">regex</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;(A3T[A-Z0-9]|AKIA|AGPA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}&quot;</span>
+</code></pre></div>
+<p>To extract <code>key-value</code> formatted data from the header, you can use the following syntax.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A list of extractors for text extraction</span>
+<span class="nt">extractors</span><span class="p">:</span>
+  <span class="c1"># type of the extractor</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kval</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+        <span class="nt">kval</span><span class="p">:</span>
+        <span class="c1"># header value to extract from response</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">content-type</span>
+</code></pre></div>
+<p>To extract <code>key-value</code> formatted data from cookie, you can use the following syntax.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A list of extractors for text extraction</span>
+<span class="nt">extractors</span><span class="p">:</span>
+  <span class="c1"># type of the extractor</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">kval</span>
+        <span class="nt">kval</span><span class="p">:</span>
+        <span class="c1"># cookie value to extract from response</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">PHPSESSID</span>
+</code></pre></div>
+<h5 id="matched-parts_1">Matched Parts<a class="headerlink" href="#matched-parts_1" title="Permanent link">&para;</a></h5>
+<p>Multiple parts of the response can also be extracted for the request, default matched part is <code>body</code> if not defined. </p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Matched Part</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>body</td>
+<td>Body of the response</td>
+</tr>
+<tr>
+<td>header</td>
+<td>Header of the response</td>
+</tr>
+<tr>
+<td>all</td>
+<td>Both body and header of the response</td>
+</tr>
+</tbody>
+</table>
+<p>Note:- <code>kval</code> extractor only supported for header and cookies. </p>
+<h5 id="dynamic-extractor">Dynamic extractor<a class="headerlink" href="#dynamic-extractor" title="Permanent link">&para;</a></h5>
+<p>Extractor plays an important role while writing an template for chained request which requires dynamic value to use at run time, for example CSRF tokens, headers or any values requires to complete the chain.  </p>
+<ul>
+<li>Example of defining extractor as dynamic variable:-</li>
+</ul>
+<div class="highlight"><pre><span></span><code>    <span class="nt">extractors</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regex</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">api_key</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+        <span class="nt">internal</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+        <span class="nt">regex</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;(?m)[0-9]{3,10}\\.[0-9]+&quot;</span>
+</code></pre></div>
+<p>Here we used extractor name as variable <code>api_key</code> which holds the value and can be reused in any part of the request dynamically, this feature is supported in RAW request format only. </p>
+<p>Note:- You can use <code>internal: true</code> when you only want to use extractor as dynamic variable, this will avoid printing extracted values in the terminal. </p>
+<p>Extraction of regex content can also be specific for <strong>matchgroups</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A list of extractors for text extraction</span>
+<span class="nt">extractors</span><span class="p">:</span>
+  <span class="c1"># type of extractor</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regex</span>
+    <span class="c1"># Let&#39;s reuse the extracted CSRF token</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csrf_token</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+    <span class="c1"># group defines the matching group being used. </span>
+    <span class="c1"># In GO the &quot;match&quot; is the full array of all matches and submatches </span>
+    <span class="c1"># match[0] is the full match</span>
+    <span class="c1"># match[n] is the submatches. Most often we&#39;d want match[1] as depicted below</span>
+    <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="nt">regex</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&#39;&lt;input\sname=&quot;csrf_token&quot;\stype=&quot;hidden&quot;\svalue=&quot;([[:alnum:]]{16})&quot;\s/&gt;&#39;</span>
+</code></pre></div>
+<p>The above extractor with name <code>csrf_token</code> will hold the value extracted (by <code>([[:alnum:]]{16}))</code> as <code>abcdefgh12345678</code>. This is compared to not using the group variable.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A list of extractors for text extraction</span>
+<span class="nt">extractors</span><span class="p">:</span>
+  <span class="c1"># type of extractor</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">regex</span>
+    <span class="c1"># Let&#39;s reuse the extracted CSRF token</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">csrf_html_tag</span>
+    <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>
+    <span class="c1"># No group here</span>
+    <span class="nt">regex</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&#39;&lt;input\sname=&quot;csrf_token&quot;\stype=&quot;hidden&quot;\svalue=&quot;([[:alnum:]]{16})&quot;\s/&gt;&#39;</span>
+</code></pre></div>
+<p>The above extractor with name <code>csrf_html_tag</code> will hold the full match (by <code>&lt;input name="csrf_token"\stype="hidden"\svalue="([[:alnum:]]{16})" /&gt;</code>) as <code>&lt;input name="csrf_token" type="hidden" value="abcdefgh12345678" /&gt;</code>.</p>
+<h4 id="example-http-template"><strong>Example HTTP Template</strong><a class="headerlink" href="#example-http-template" title="Permanent link">&para;</a></h4>
+<p>The final template file for the <code>.git/config</code> file mentioned above is as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">git-config</span>
+
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Git Config File</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Ice3man</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">medium</span>
+  <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Searches for the pattern /.git/config on passed URLs.</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GET</span>
+    <span class="nt">path</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;{{BaseURL}}/.git/config&quot;</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+        <span class="nt">words</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;[core]&quot;</span>
+</code></pre></div>
+<h3 id="http-raw-requests">HTTP Raw requests<a class="headerlink" href="#http-raw-requests" title="Permanent link">&para;</a></h3>
+<p>Another way to create request is using raw requests which comes with more flexibility and support of DSL helper functions, like the following ones (as of now it's suggested to leave the <code>Host</code> header as in the example with the variable <code>{{Hostname}}</code>), All the Matcher, Extractor capabilities can be used with RAW requests in same the way described above. </p>
+<div class="highlight"><pre><span></span><code><span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">raw</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST /path2/ HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Content-Length: 1</span>
+        <span class="no">Origin: https://www.google.com</span>
+        <span class="no">Content-Type: application/x-www-form-urlencoded</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko)</span>
+        <span class="no">Accept-Language: en-US,en;q=0.9</span>
+
+        <span class="no">a=test&amp;b=pd</span>
+</code></pre></div>
+<p>Requests can be fine tuned to perform the exact tasks as desired. Nuclei requests are fully configurable meaning you can configure and define each and every single thing about the requests that will be sent to the target servers.  Here follows an example:</p>
+<h4 id="intruder-payloads">Intruder payloads<a class="headerlink" href="#intruder-payloads" title="Permanent link">&para;</a></h4>
+<p>It's possible to define placeholders with simple keywords (or using brackets {{helper_function(variable)}} in case mutator functions are needed), and perform <strong>Sniper</strong>, <strong>Pitchfork</strong> and <strong>ClusterBomb</strong> attacks. The wordlist for these attacks needs to be defined during the request definition under the Payload field, with a name matching the keyword, Nuclei supports both file based and in template wordlist support and Finally all DSL functionalities are fully available and supported, and can be used to manipulate the final values.</p>
+<p>Payloads are defined using variable name and can be referenced in the request between <code>§</code> marker, for example <strong>§variable_name§</strong>.</p>
+<p>An example of the using payloads with local wordlist:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">requests</span><span class="p">:</span>
+
+<span class="c1"># HTTP Intruder fuzzing using local wordlist.</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">payloads</span><span class="p">:</span>
+      <span class="nt">parameter</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">params.txt</span>
+      <span class="nt">header</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local.txt</span>
+</code></pre></div>
+<p>An example of the using payloads with in template wordlist support:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">requests</span><span class="p">:</span>
+
+<span class="c1"># HTTP Intruder fuzzing using in template wordlist.</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">payloads</span><span class="p">:</span>
+
+      <span class="nt">password</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">guest</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">123456</span>
+</code></pre></div>
+<p><strong>Note:-</strong> be careful while selecting attack type, as unexpected input will break the template. </p>
+<p>For example, if you used <code>clusterbomb</code> or <code>pitchfork</code> as attack type and defined only one variable in the payload section, template will fail to compile, as <code>clusterbomb</code> or <code>pitchfork</code> expect more then one variable to use in the template. </p>
+<h4 id="intruder-attack">Intruder attack<a class="headerlink" href="#intruder-attack" title="Permanent link">&para;</a></h4>
+<p>When using intruder, we support multiple attack types, including <code>sniper</code> which generally used to fuzz single parameter, <code>clusterbomb</code> and <code>pitchfork</code> for fuzzing multiple parameters which works same as classical burp intruder on CLI. </p>
+<h5 id="types-of-attack">Types of attack<a class="headerlink" href="#types-of-attack" title="Permanent link">&para;</a></h5>
+<ul>
+<li>sniper</li>
+<li>pitchfork</li>
+<li>clusterbomb</li>
+</ul>
+<p><strong>Sniper:-</strong></p>
+<blockquote>
+<p>The sniper attack uses only one payload set, and it replaces only one position at a time. It loops through the payload set, first replacing only the first marked position with the payload and leaving all other positions to their original value. After its done with the first position, it continues with the second position.</p>
+</blockquote>
+<p><strong>Pitchfork:-</strong></p>
+<blockquote>
+<p>The pitchfork attack type uses one payload set for each position. It places the first payload in the first position, the second payload in the second position, and so on.</p>
+<p>It then loops through all payload sets at the same time. The first request uses the first payload from each payload set, the second request uses the second payload from each payload set, and so on.</p>
+</blockquote>
+<p><strong>Clusterbomb:-</strong> </p>
+<blockquote>
+<p>The cluster bomb attack tries all different combinations of payloads. It still puts the first payload in the first position, and the second payload in the second position. But when it loops through the payload sets, it tries all combinations.</p>
+<p>This attack type is useful for a brute-force attack. Load a list of commonly used usernames in the first payload set, and a list of commonly used passwords in the second payload set. The cluster bomb attack will then try all combinations.</p>
+</blockquote>
+<p>You can read more about attack types <a href="https://www.sjoerdlangkemper.nl/2017/08/02/burp-intruder-attack-types/">here</a>. </p>
+<p>An example of the using using <code>clusterbomb</code> attack to fuzz.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Defining HTTP Intruder attack type</span>
+
+    <span class="nt">attack</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">clusterbomb</span>
+
+    <span class="c1"># Available attack types: sniper, pitchfork and clusterbomb</span>
+</code></pre></div>
+<h4 id="raw-http-support">RAW HTTP Support<a class="headerlink" href="#raw-http-support" title="Permanent link">&para;</a></h4>
+<p>Nuclei also supports <a href="https://github.com/projectdiscovery/rawhttp">rawhttp</a> for complete request control and customization allowing any kind of malformed requests checks for issues like HTTP request smuggling, Host header injection, CRLF with malformed characters and more, <strong>rawhttp</strong> library is disabled as default and can be used by including <code>unsafe: true</code> in the request block. </p>
+<p>Here is an example for HTTP request smuggling detection using <code>rawhttp</code>. </p>
+<div class="highlight"><pre><span></span><code><span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">raw</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Content-Type: application/x-www-form-urlencoded</span>
+        <span class="no">Content-Length: 150</span>
+        <span class="no">Transfer-Encoding: chunked</span>
+
+        <span class="no">0</span>
+
+        <span class="no">GET /post?postId=5 HTTP/1.1</span>
+        <span class="no">User-Agent: a&quot;/&gt;&lt;script&gt;alert(1)&lt;/script&gt;</span>
+        <span class="no">Content-Type: application/x-www-form-urlencoded</span>
+        <span class="no">Content-Length: 5</span>
+
+        <span class="no">x=1</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">GET /post?postId=5 HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+
+    <span class="nt">unsafe</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>  <span class="c1"># enables rawhttp client</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dsl</span>
+        <span class="nt">dsl</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&#39;contains(body,</span><span class="nv"> </span><span class="s">&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;)&#39;</span>
+</code></pre></div>
+<p>Using <code>rawhttp</code> also enable automatic handling of <code>host</code> header and <code>content-length</code> header, to disable this behavior, <code>disable-automatic-content-length-header</code> and  <code>disable-automatic-host-header</code> can be used in following manner. </p>
+<div class="highlight"><pre><span></span><code><span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">raw</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Content-Type: application/x-www-form-urlencoded</span>
+        <span class="no">Content-Length: 150</span>
+        <span class="no">Transfer-Encoding: chunked</span>
+
+        <span class="no">0</span>
+
+    <span class="nt">unsafe</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>  <span class="c1"># enables rawhttp client</span>
+    <span class="nt">disable-automatic-content-length-header</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">disable-automatic-host-header</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dsl</span>
+        <span class="nt">dsl</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&#39;contains(body,</span><span class="nv"> </span><span class="s">&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;)&#39;</span>
+</code></pre></div>
+<h4 id="helper-functions">Helper functions<a class="headerlink" href="#helper-functions" title="Permanent link">&para;</a></h4>
+<p>Here is the list of all supported helper functions can be used in the RAW requests:</p>
+<table>
+<thead>
+<tr>
+<th>Helper function</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>len</td>
+<td>Length of a string</td>
+<td>len("Hello")</td>
+</tr>
+<tr>
+<td>toupper</td>
+<td>String to uppercase</td>
+<td>toupper("Hello")</td>
+</tr>
+<tr>
+<td>tolower</td>
+<td>String to lowercase</td>
+<td>tolower("Hello")</td>
+</tr>
+<tr>
+<td>replace</td>
+<td>Replace string parts</td>
+<td>replace("Hello", "He", "Ha")</td>
+</tr>
+<tr>
+<td>trim</td>
+<td>Remove trailing unicode chars</td>
+<td>trim("aaaHelloddd", "ad")</td>
+</tr>
+<tr>
+<td>trimleft</td>
+<td>Remove unicode chars from left</td>
+<td>trimleft("aaaHelloddd", "ad")</td>
+</tr>
+<tr>
+<td>trimright</td>
+<td>Remove unicode chars from right</td>
+<td>trimleft("aaaHelloddd", "ad")</td>
+</tr>
+<tr>
+<td>trimspace</td>
+<td>Remove trailing spaces</td>
+<td>trimspace("  Hello  ")</td>
+</tr>
+<tr>
+<td>trimprefix</td>
+<td>Trim specified prefix</td>
+<td>trimprefix("aaHelloaa", "aa")</td>
+</tr>
+<tr>
+<td>trimsuffix</td>
+<td>Trim specified suffix</td>
+<td>trimsuffix("aaHelloaa", "aa")</td>
+</tr>
+<tr>
+<td>base64</td>
+<td>Encode string to base64</td>
+<td>base64("Hello")</td>
+</tr>
+<tr>
+<td>base64_decode</td>
+<td>Decode string from base64</td>
+<td>base64_decode("SGVsbG8=")</td>
+</tr>
+<tr>
+<td>url_encode</td>
+<td>URL encode a string</td>
+<td>url_encode("hxxps://projectdiscovery.io/test?a=1")</td>
+</tr>
+<tr>
+<td>url_decode</td>
+<td>URL decode a string</td>
+<td>url_decode("https:%2F%2Fprojectdiscovery.io%3Ftest=1")</td>
+</tr>
+<tr>
+<td>hex_encode</td>
+<td>Hex encode a string</td>
+<td>hex_encode("aa")</td>
+</tr>
+<tr>
+<td>hex_decode</td>
+<td>Hex decode a string</td>
+<td>hex_decode("6161")</td>
+</tr>
+<tr>
+<td>html_escape</td>
+<td>Hex encode a string</td>
+<td>html_escape("<body>test</body>")</td>
+</tr>
+<tr>
+<td>html_unescape</td>
+<td>Hex decode a string</td>
+<td>html_unescape("&lt;body&gt;test&lt;/body&gt;")</td>
+</tr>
+<tr>
+<td>md5</td>
+<td>Calculate md5 of string</td>
+<td>md5("Hello")</td>
+</tr>
+<tr>
+<td>sha256</td>
+<td>Calculate sha256 of string</td>
+<td>sha256("Hello")</td>
+</tr>
+<tr>
+<td>sha1</td>
+<td>Calculate sha1 of string</td>
+<td>sha1("Hello")</td>
+</tr>
+<tr>
+<td>contains</td>
+<td>Verify if a string contains another one</td>
+<td>contains("Hello", "lo")</td>
+</tr>
+<tr>
+<td>regex</td>
+<td>Verify a regex versus a string</td>
+<td>regex("H([a-z]+)o", "Hello")</td>
+</tr>
+</tbody>
+</table>
+<p>An example of the using helper function in the header. </p>
+<div class="highlight"><pre><span></span><code>    <span class="nt">raw</span><span class="p">:</span>
+      <span class="c1"># Request with simple header manipulation with DSL functions</span>
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">GET /manager/html HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Authorization: Basic {{base64(&#39;username:password&#39;)}}</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0</span>
+        <span class="no">Accept-Language: en-US,en;q=0.9</span>
+        <span class="no">Connection: close</span>
+</code></pre></div>
+<h4 id="example-raw-template"><strong>Example RAW Template</strong><a class="headerlink" href="#example-raw-template" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http-raw-request</span>
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Example-Fuzzing</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">payloads</span><span class="p">:</span>
+      <span class="nt">username</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
+
+      <span class="nt">password</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">admin</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">guest</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">test</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">123456</span>
+
+    <span class="nt">attack</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">clusterbomb</span>
+
+    <span class="c1"># Supported attack types: sniper, pitchfork and clusterbomb</span>
+
+    <span class="nt">raw</span><span class="p">:</span>
+      <span class="c1"># Request with simple header manipulation with DSL functions</span>
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">GET /manager/html HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Authorization: Basic {{base64(username + &#39;:&#39; + password)}}</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0</span>
+        <span class="no">Accept-Language: en-US,en;q=0.9</span>
+        <span class="no">Connection: close</span>
+
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
+        <span class="nt">status</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+</code></pre></div>
+<h3 id="dns-requests">DNS Requests<a class="headerlink" href="#dns-requests" title="Permanent link">&para;</a></h3>
+<p>Requests start with a dns block which specifies the start of the requests for the template.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start the requests for the template right here</span>
+<span class="nt">dns</span><span class="p">:</span>
+</code></pre></div>
+<p>DNS requests can be fine tuned to perform the exact tasks as desired. Nuclei requests are fully configurable meaning you can configure and define each and every single thing about the requests that will be sent to the target servers.</p>
+<h4 id="type">Type<a class="headerlink" href="#type" title="Permanent link">&para;</a></h4>
+<p>First thing in the request is <strong>type</strong>. Request type can be <strong>A</strong>, <strong>NS</strong>, <strong>CNAME</strong>, <strong>SOA</strong>, <strong>PTR</strong>, <strong>MX</strong>, <strong>TXT</strong>, <strong>AAAA</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># type is the type for the dns request</span>
+<span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">A</span>
+</code></pre></div>
+<h4 id="name">Name<a class="headerlink" href="#name" title="Permanent link">&para;</a></h4>
+<p>The next part of the requests is the <strong>name</strong> of the request path. Dynamic variables can be placed in the path to modify its value on runtime. Variables start with <code>{{</code> and end with <code>}}</code> and are case-sensitive.</p>
+<ol>
+<li><strong>FQDN</strong> - variable is replaced by the hostname/FQDN of the target on runtime.</li>
+</ol>
+<p>Some sample dynamic variable replacement examples:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">name</span><span class="p">:</span> <span class="p p-Indicator">{{</span><span class="nv">FQDN</span><span class="p p-Indicator">}}</span><span class="l l-Scalar l-Scalar-Plain">.com</span>
+<span class="c1"># This value will be replaced on execution with the FQDN.</span>
+<span class="c1"># If FQDN is https://this.is.an.example then the</span>
+<span class="c1"># name will get replaced to the following: this.is.an.example.com</span>
+</code></pre></div>
+<p>As of now the tool supports only one question per request.</p>
+<h4 id="class">Class<a class="headerlink" href="#class" title="Permanent link">&para;</a></h4>
+<p>Class type can be <strong>INET</strong>, <strong>CSNET</strong>, <strong>CHAOS</strong>, <strong>HESIOD</strong>, <strong>NONE</strong> and <strong>ANY</strong>. Usually it's enough to just leave it as <strong>INET</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># method is the class for the dns request</span>
+<span class="nt">class</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">inet</span>
+</code></pre></div>
+<h4 id="recursion">Recursion<a class="headerlink" href="#recursion" title="Permanent link">&para;</a></h4>
+<p>Recursion is a boolean value, and determines if the resolver should only return cached results, or traverse the whole dns root tree to retrieve fresh results. Generally it's better to leave it as <strong>true</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Recursion is a boolean determining if the request is recursive</span>
+<span class="nt">recursion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<h4 id="retries">Retries<a class="headerlink" href="#retries" title="Permanent link">&para;</a></h4>
+<p>Retries is the number of attempts a dns query is retried before giving up among different resolvers. It's recommended a reasonable value, like <strong>3</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Retries is a number of retries before giving up on dns resolution</span>
+<span class="nt">retries</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+</code></pre></div>
+<h4 id="matchers_1">Matchers<a class="headerlink" href="#matchers_1" title="Permanent link">&para;</a></h4>
+<p>Matchers are just equal to HTTP, but the search is performed on the whole dns response, therefore it's not necessary to specify the <strong>part</strong>. Multiple type of combinations and checks can be added to ensure that the results you get are free from false positives. The complex <strong>dsl</strong> matcher type allows to build complex queries as described in the HTTP section.</p>
+<h5 id="types_2">Types<a class="headerlink" href="#types_2" title="Permanent link">&para;</a></h5>
+<p>Multiple matchers can be specified in a request. There are basically 3 types of matchers:</p>
+<table>
+<thead>
+<tr>
+<th>Matcher Type</th>
+<th>Part Matched</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>word</td>
+<td>DNS Response</td>
+</tr>
+<tr>
+<td>regex</td>
+<td>DNS Response</td>
+</tr>
+<tr>
+<td>dsl</td>
+<td>DNS Response</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example-dns-template"><strong>Example DNS Template</strong><a class="headerlink" href="#example-dns-template" title="Permanent link">&para;</a></h4>
+<p>The final example template file for performing <code>A</code> query, and check if CNAME and A records are in the response is as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">dummy-cname-a</span>
+
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Dummy A dns request</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mzack9999</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">none</span>
+  <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checks if CNAME and A record is returned.</span>
+
+<span class="nt">dns</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;{{FQDN}}&quot;</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">A</span>
+    <span class="nt">class</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">inet</span>
+    <span class="nt">recursion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">retries</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+        <span class="nt">words</span><span class="p">:</span>
+          <span class="c1"># The response must contains a CNAME record</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;IN\tCNAME&quot;</span>
+          <span class="c1"># and also at least 1 A record</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;IN\tA&quot;</span>
+        <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">and</span>
+</code></pre></div>
+<h3 id="workflows">Workflows<a class="headerlink" href="#workflows" title="Permanent link">&para;</a></h3>
+<p>Workflows are powerful utility of nuclei and most efficient way to use nuclei templates where all the templates can be configured based on specific needs of users, one can configure a workflow in a way that ensures / control complete nuclei templates checks from a single workflow, the use cases varies depending upon the users needs.</p>
+<p><a href="https://github.com/d5/tengo">Tengo</a>, a scripting engine is used as a base for nuclei workflows which provides a very powerful and highly customizable engine for users to automate all their needs.</p>
+<p>Workflows can be defined with <code>workflows</code> attribute, following the <code>template</code> or <code>subtemplates</code> to executes, and we can write two type of workflows. </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Workflows starts form this block.</span>
+<span class="nt">workflows</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">technologies/template-to-execute.yaml</span>
+</code></pre></div>
+<p><strong>Type of workflows</strong></p>
+<ol>
+<li>Generic workflows</li>
+<li>Conditional workflows</li>
+</ol>
+<h4 id="generic-workflows">Generic Workflows<a class="headerlink" href="#generic-workflows" title="Permanent link">&para;</a></h4>
+<p>In generic workflow one can define a single or multiple template executions from a single workflow, it can be list of specific templates or list of directory containing multiple templates.</p>
+<p>For example:- </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A workflow that runs all config related templates on the list of give URLs.</span>
+
+<span class="nt">workflows</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">files/git-config.yaml</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">files/svn-config.yaml</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">files/env-file.yaml</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">files/backup-files.yaml</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># A workflow that runs specific list of checks defined for your project.</span>
+
+<span class="nt">workflows</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cves/</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exposed-tokens/</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exposures/</span>
+</code></pre></div>
+<h4 id="conditional-workflows">Conditional Workflows<a class="headerlink" href="#conditional-workflows" title="Permanent link">&para;</a></h4>
+<p>You can also create conditional templates which executes after matching the condition from the previous templates, mostly useful for vulnerability detection and exploitation and tech based detection and exploitation, single, multiple along with directory based templates can be executed in chained workflow template. </p>
+<p><strong>Templates based conditional check</strong></p>
+<p>For example:- </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A workflow that executes subtemplates when base template gets matched.</span>
+
+<span class="nt">workflows</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">technologies/jira-detect.yaml</span>
+    <span class="nt">subtemplates</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exploits/jira-exploit-1.yaml</span>
+      <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exploits/jira-exploit-1.yaml</span>
+</code></pre></div>
+<p><strong>Templates and matcher name based conditional check</strong></p>
+<p>For example:- </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A workflow that executes subtemplates when a matcher of base template gets matched.</span>
+
+<span class="nt">workflows</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">technologies/tech-detect.yaml</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vbulletin</span>
+        <span class="nt">subtemplates</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exploits/vbulletin-exp1.yaml</span>
+          <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exploits/vbulletin-exp2.yaml</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">jboss</span>
+        <span class="nt">subtemplates</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exploits/jboss-exp1.yaml</span>
+          <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">exploits/jboss-exp2.yaml</span>
+</code></pre></div>
+<p>In similar manner, one can create as much conditions you want to execute specific templates based on certain conditions.</p>
+<p><strong>Templates and matcher name based multi level conditional check</strong></p>
+<p>For example:- </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># A workflow showcasing chain of template executions that runs only if the previous templates get matched.</span>
+
+<span class="nt">workflows</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">technologies/tech-detect.yaml</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">lotus-domino</span>
+        <span class="nt">subtemplates</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">technologies/lotus-domino-version.yaml</span>
+            <span class="nt">subtemplates</span><span class="p">:</span>
+              <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cves/xx-yy-zz.yaml</span>
+                <span class="nt">subtemplates</span><span class="p">:</span>
+                  <span class="p p-Indicator">-</span> <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cves/xx-xx-xx.yaml</span>
+</code></pre></div>
+<p>Conditional workflows are great examples of performing checks and vulnerability detection in most efficient manner instead of spraying all the templates on your all the targets, and generally comes of with good ROI of your time and good for the target projects and websites as well.</p>
+<h3 id="advance-fuzzing">Advance Fuzzing<a class="headerlink" href="#advance-fuzzing" title="Permanent link">&para;</a></h3>
+<p>We’ve enriched nuclei to allow advanced fuzzing of web servers. Users can now use multiple options to tune HTTP fuzzing workflows.</p>
+<h4 id="http-pipelining">HTTP Pipelining<a class="headerlink" href="#http-pipelining" title="Permanent link">&para;</a></h4>
+<p>HTTP Pipelining support has been added which allows multiple HTTP requests to be sent on the same connection inspired from <a href="https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn">http-desync-attacks-request-smuggling-reborn</a>.</p>
+<p>Before running HTTP pipelining based templates, make sure the running target supports HTTP Pipeline connection, otherwise nuclei engine fallback to stranded HTTP request. </p>
+<p>If you wanted to confirm the given domain or list of subdomains supports HTTP Pipelining? <a href="https://github.com/projectdiscovery/">httpx</a> has a flag <code>-pipeline</code> to probe it.</p>
+<p>An example configuring pipelining attributes of nuclei template.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nt">unsafe</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">pipeline</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">pipeline-max-connections</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="nt">pipeline-max-workers</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">25000</span>
+</code></pre></div>
+<p>An example template demonstrating pipelining capabilities of nuclei has been provided below-</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pipeline-testing</span>
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pipeline testing</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pdteam</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">info</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">payloads</span><span class="p">:</span>
+      <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">path_wordlist.txt</span>
+
+    <span class="nt">attack</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sniper</span>
+    <span class="nt">unsafe</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">pipeline</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">pipeline-max-connections</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="nt">pipeline-max-workers</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">25000</span>
+
+    <span class="nt">raw</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">GET /§path§ HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:79.0) Gecko/20100101 Firefox/79.0</span>
+        <span class="no">Accept: application/json, text/plain, */*</span>
+        <span class="no">Accept-Language: en-US,en;q=0.5</span>
+        <span class="no">Referer: {{BaseURL}}</span>
+        <span class="no">Connection: keep-alive        </span>
+
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+        <span class="nt">status</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+</code></pre></div>
+<h4 id="http-connection-pooling">HTTP Connection pooling<a class="headerlink" href="#http-connection-pooling" title="Permanent link">&para;</a></h4>
+<p>While the earlier versions of nuclei did not do connection pooling, users can now configure templates to either use HTTP connection pooling or not. This allows for faster scanning based on requirement.</p>
+<p>To enable connection pooling in the template, <code>threads</code> attribute can be defined with respective number of threads you wanted to use in the payloads sections.</p>
+<p><code>Connection: Close</code> header can not be used in HTTP connection pooling template, otherwise engine will fail and fallback to standard HTTP requests.</p>
+<p>An example template using HTTP connection pooling-</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fuzzing-example</span>
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Connection pooling example</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pdteam</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">info</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">payloads</span><span class="p">:</span>
+      <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">password.txt</span>
+
+    <span class="nt">threads</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="nt">attack</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sniper</span>
+
+    <span class="nt">raw</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">GET /protected HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Authorization: Basic {{base64(&#39;admin:§password§&#39;)}}</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0</span>
+        <span class="no">Accept-Language: en-US,en;q=0.9</span>
+
+    <span class="nt">matchers-condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">and</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
+        <span class="nt">status</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+        <span class="nt">words</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;Unique</span><span class="nv"> </span><span class="s">string&quot;</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">body</span>    
+</code></pre></div>
+<h4 id="http-smuggling">HTTP Smuggling<a class="headerlink" href="#http-smuggling" title="Permanent link">&para;</a></h4>
+<p>HTTP Smuggling is a class of Web-Attacks recently made popular by <a href="https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn">Portswigger’s Research</a> into the topic. For an in-depth overview, please visit the article linked above.</p>
+<p>In the open source space, detecting http smuggling is difficult particularly due to the requests for detection being malformed by nature. Nuclei is able to reliably detect HTTP Smuggling vulnerabilities utilising the <a href="https://github.com/projectdiscovery/rawhttp">rawhttp</a> engine.</p>
+<p>The most basic example of a HTTP Smuggling vulnerability is CL.TE Smuggling. An example template to detect a CE.TL HTTP Smuggling vulnerability is provided below using the <code>unsafe: true</code> attribute for rawhttp based requests.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CL.TE-http-smuggling</span>
+
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HTTP request smuggling, basic CL.TE vulnerability</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pdteam</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">info</span>
+  <span class="nt">lab</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://portswigger.net/web-security/request-smuggling/lab-basic-cl-te</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">raw</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+      <span class="no">POST / HTTP/1.1</span>
+      <span class="no">Host: {{Hostname}}</span>
+      <span class="no">Connection: keep-alive</span>
+      <span class="no">Content-Type: application/x-www-form-urlencoded</span>
+      <span class="no">Content-Length: 6</span>
+      <span class="no">Transfer-Encoding: chunked</span>
+
+      <span class="no">0</span>
+
+      <span class="no">G      </span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+      <span class="no">POST / HTTP/1.1</span>
+      <span class="no">Host: {{Hostname}}</span>
+      <span class="no">Connection: keep-alive</span>
+      <span class="no">Content-Type: application/x-www-form-urlencoded</span>
+      <span class="no">Content-Length: 6</span>
+      <span class="no">Transfer-Encoding: chunked</span>
+
+      <span class="no">0</span>
+
+      <span class="no">G</span>
+
+    <span class="nt">unsafe</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">word</span>
+        <span class="nt">words</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&#39;Unrecognized</span><span class="nv"> </span><span class="s">method</span><span class="nv"> </span><span class="s">GPOST&#39;</span>
+</code></pre></div>
+<p>More examples are available in <a href="https://nuclei.projectdiscovery.io/template-examples/smuggling/">template-examples</a> section for smuggling templates.</p>
+<h4 id="race-conditions">Race conditions<a class="headerlink" href="#race-conditions" title="Permanent link">&para;</a></h4>
+<p>Race Conditions are another class of bugs not easily automated via traditional tooling. Burp Suite introduced a Gate mechanism to Turbo Intruder where all the bytes for all the requests are sent expect the last one at once which is only sent together for all requests synchronizing the send event.</p>
+<p>We have implemented <strong>Gate</strong> mechanism in nuclei engine and allow them run via templates which makes the testing for this specfic bug class simple and portable.</p>
+<p>To enable race condition check within template, <code>race</code> attribute can be set to <code>true</code> and <code>race_count</code> defines the number of simultaneous request you want to initiate.</p>
+<p>Below is an example template where the same request is repeated for 10 times using the gate logic.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">race-condition-testing</span>
+
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Race condition testing</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pdteam</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">info</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">raw</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST /coupons HTTP/1.1</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Pragma: no-cache</span>
+        <span class="no">Cache-Control: no-cache, no-transform</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0</span>
+
+        <span class="no">promo_code=20OFF        </span>
+
+    <span class="nt">race</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+    <span class="nt">race_count</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+    <span class="nt">matchers</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">status</span>
+        <span class="nt">part</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">header</span>
+        <span class="nt">status</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+</code></pre></div>
+<p>You can simply replace the <code>POST</code> request with any suspected vulnerable request and change the <code>race_count</code> as per your need and it's ready to run.</p>
+<div class="highlight"><pre><span></span><code>nuclei -t race.yaml -target https://api.target.com
+</code></pre></div>
+<p><strong>Multi request race condition testing</strong></p>
+<p>For the scenario when multiple requests needs to be sent in order to exploit the race condition, we can make use of threads.</p>
+<div class="highlight"><pre><span></span><code>    <span class="nt">threads</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">race</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p><code>threads</code> is a total number of request you wanted make with the template to perform race condition testing.</p>
+<p>Below is an example template where multiple (5) unique request will be sent at the same time using the gate logic.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">multi-request-race</span>
+
+<span class="nt">info</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Race condition testing with multiple requests</span>
+  <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pd-team</span>
+  <span class="nt">severity</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">info</span>
+
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">raw</span><span class="p">:</span>  
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Pragma: no-cache</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Cache-Control: no-cache, no-transform</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0</span>
+
+        <span class="no">id=1</span>
+
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Pragma: no-cache</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Cache-Control: no-cache, no-transform</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0</span>
+
+        <span class="no">id=2</span>
+
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Pragma: no-cache</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Cache-Control: no-cache, no-transform</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0</span>
+
+        <span class="no">id=3</span>
+
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Pragma: no-cache</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Cache-Control: no-cache, no-transform</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0</span>
+
+        <span class="no">id=4</span>
+
+      <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+        <span class="no">POST / HTTP/1.1</span>
+        <span class="no">Pragma: no-cache</span>
+        <span class="no">Host: {{Hostname}}</span>
+        <span class="no">Cache-Control: no-cache, no-transform</span>
+        <span class="no">User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0</span>
+
+        <span class="no">id=5</span>
+
+    <span class="nt">threads</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">race</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>The best part of this is you can simply share your crafted template with your team mates, triage/security team to replicate the issue on the other side with ease.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href=".." title="Index" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Index
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../template-examples/http/" title="HTTP" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                HTTP
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 ProjectDiscovery, Inc.
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/projectdiscovery/nuclei" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://twitter.com/pdnuclei" target="_blank" rel="noopener" title="twitter.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.877163d5.min.js"></script>
+      <script src="../assets/javascripts/bundle.1688372e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: ["tabs"],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.1b3b2620.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+        <script src="../search/main.js"></script>
+      
+    
+  </body>
+</html>
